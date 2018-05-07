@@ -1,3 +1,8 @@
 [ver:1,total:180]
 .circleci/config.yml:120,1525723200:120,m
 .circleci/push-multiarch.sh:60,1525723200:60,m
+
+[ver:1,total:180]
+.circleci/config.yml:90,1525723200:90,m
+Dockerfile:60,1525723200:60,m
+.circleci/push-multiarch.sh:30,1525723200:30,m

@@ -1,0 +1,4 @@
+[ver:1,total:180]
+.circleci/push-multiarch.sh:100,1525723200:100,m
+Dockerfile:60,1525723200:60,m
+.circleci/config.yml:20,1525723200:20,m

@@ -35,6 +35,25 @@ shared: &shared
         name: Install build dependencies.
         command: apk add --no-cache bash curl jq
 
+    - restore_cache:
+        keys:
+          - go-1.11
+    - run:
+        name: Update Go version.
+        command: |
+          if ! (hash go &>/dev/null || go version | grep 1.11); then
+            curl -O https://storage.googleapis.com/golang/go1.11.linux-amd64.tar.gz
+            tar xzf go1.11.linux-amd64.tar.gz
+            rm -rf /usr/local/go
+            mv go/ /usr/local/
+          fi
+          export CI_USER=$(whoami)
+          chown "${CI_USER}:" /usr/local/go
+    - save_cache:
+        key: go-1.11
+        paths:
+          - /usr/local/go
+
     - run:
         # Unforunately, there's no easy way to "merge" anchors/references
         # according to the # YAML 1.2 spec. So, the recommended way to handle
@@ -58,27 +77,14 @@ shared: &shared
 
           source $BASH_ENV
 
+          echo $PATH
+          go env
+
           if [ $VERSION == 'null' ]; then
             echo "Unable to determine version."
             exit 1
           fi
 
-    - restore_cache:
-        keys:
-          - go-1.11
-    - run:
-        name: Update Go version.
-        command: |
-          curl -O https://storage.googleapis.com/golang/go1.11.linux-amd64.tar.gz
-          tar xzf go1.11.linux-amd64.tar.gz
-          rm -rf /usr/local/go
-          mv go/ /usr/local/
-          export CI_USER=$(whoami)
-          chown "${CI_USER}:" /usr/local/go
-    - save_cache:
-        key: go-1.11
-        paths:
-          - /usr/local/go
 
     - run:
         name: Clone repo.

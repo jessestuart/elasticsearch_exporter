@@ -8,6 +8,7 @@ type nodeStatsResponse struct {
 	Nodes       map[string]NodeStatsNodeResponse
 }
 
+// NodeStatsNodeResponse defines node stats information structure for nodes
 type NodeStatsNodeResponse struct {
 	Name             string                                     `json:"name"`
 	Host             string                                     `json:"host"`
@@ -23,7 +24,7 @@ type NodeStatsNodeResponse struct {
 	ThreadPool       map[string]NodeStatsThreadPoolPoolResponse `json:"thread_pool"`
 	JVM              NodeStatsJVMResponse                       `json:"jvm"`
 	Breakers         map[string]NodeStatsBreakersResponse       `json:"breakers"`
-	Http             map[string]int                             `json:"http"`
+	HTTP             map[string]int                             `json:"http"`
 	Transport        NodeStatsTransportResponse                 `json:"transport"`
 	Process          NodeStatsProcessResponse                   `json:"process"`
 }
@@ -43,21 +44,25 @@ type NodeStatsJVMResponse struct {
 	Mem         NodeStatsJVMMemResponse                   `json:"mem"`
 }
 
+// NodeStatsJVMGCResponse defines node stats JVM garbage collector information structure
 type NodeStatsJVMGCResponse struct {
 	Collectors map[string]NodeStatsJVMGCCollectorResponse `json:"collectors"`
 }
 
+// NodeStatsJVMGCCollectorResponse defines node stats JVM garbage collector collection information structure
 type NodeStatsJVMGCCollectorResponse struct {
 	CollectionCount int64 `json:"collection_count"`
 	CollectionTime  int64 `json:"collection_time_in_millis"`
 }
 
+// NodeStatsJVMBufferPoolResponse defines node stats JVM buffer pool information structure
 type NodeStatsJVMBufferPoolResponse struct {
 	Count         int64 `json:"count"`
 	TotalCapacity int64 `json:"total_capacity_in_bytes"`
 	Used          int64 `json:"used_in_bytes"`
 }
 
+// NodeStatsJVMMemResponse defines node stats JVM memory information structure
 type NodeStatsJVMMemResponse struct {
 	HeapCommitted    int64                                  `json:"heap_committed_in_bytes"`
 	HeapUsed         int64                                  `json:"heap_used_in_bytes"`
@@ -67,6 +72,7 @@ type NodeStatsJVMMemResponse struct {
 	Pools            map[string]NodeStatsJVMMemPoolResponse `json:"pools"`
 }
 
+// NodeStatsJVMMemPoolResponse defines node stats JVM memory pool information structure
 type NodeStatsJVMMemPoolResponse struct {
 	Used     int64 `json:"used_in_bytes"`
 	Max      int64 `json:"max_in_bytes"`
@@ -74,6 +80,7 @@ type NodeStatsJVMMemPoolResponse struct {
 	PeakMax  int64 `json:"peak_max_in_bytes"`
 }
 
+// NodeStatsNetworkResponse defines node stats network information structure
 type NodeStatsNetworkResponse struct {
 	TCP NodeStatsTCPResponse `json:"tcp"`
 }
@@ -97,6 +104,7 @@ type NodeStatsThreadPoolPoolResponse struct {
 	Completed int64 `json:"completed"`
 }
 
+// NodeStatsTCPResponse defines node stats TCP information structure
 type NodeStatsTCPResponse struct {
 	ActiveOpens  int64 `json:"active_opens"`
 	PassiveOpens int64 `json:"passive_opens"`
@@ -123,36 +131,58 @@ type NodeStatsIndicesResponse struct {
 	QueryCache   NodeStatsIndicesCacheResponse `json:"query_cache"`
 	RequestCache NodeStatsIndicesCacheResponse `json:"request_cache"`
 	Flush        NodeStatsIndicesFlushResponse
+	Warmer       NodeStatsIndicesWarmerResponse
 	Segments     NodeStatsIndicesSegmentsResponse
 	Refresh      NodeStatsIndicesRefreshResponse
 	Translog     NodeStatsIndicesTranslogResponse
+	Completion   NodeStatsIndicesCompletionResponse
 }
 
+// NodeStatsIndicesDocsResponse defines node stats docs information structure for indices
 type NodeStatsIndicesDocsResponse struct {
 	Count   int64 `json:"count"`
 	Deleted int64 `json:"deleted"`
 }
 
+// NodeStatsIndicesRefreshResponse defines node stats refresh information structure for indices
 type NodeStatsIndicesRefreshResponse struct {
 	Total     int64 `json:"total"`
 	TotalTime int64 `json:"total_time_in_millis"`
 }
 
+// NodeStatsIndicesTranslogResponse defines node stats translog information structure for indices
 type NodeStatsIndicesTranslogResponse struct {
 	Operations int64 `json:"operations"`
 	Size       int64 `json:"size_in_bytes"`
 }
 
-type NodeStatsIndicesSegmentsResponse struct {
-	Count  int64 `json:"count"`
-	Memory int64 `json:"memory_in_bytes"`
+// NodeStatsIndicesCompletionResponse defines node stats completion information structure for indices
+type NodeStatsIndicesCompletionResponse struct {
+	Size int64 `json:"size_in_bytes"`
 }
 
+// NodeStatsIndicesSegmentsResponse defines node stats segments information structure for indices
+type NodeStatsIndicesSegmentsResponse struct {
+	Count              int64 `json:"count"`
+	Memory             int64 `json:"memory_in_bytes"`
+	TermsMemory        int64 `json:"terms_memory_in_bytes"`
+	IndexWriterMemory  int64 `json:"index_writer_memory_in_bytes"`
+	NormsMemory        int64 `json:"norms_memory_in_bytes"`
+	StoredFieldsMemory int64 `json:"stored_fields_memory_in_bytes"`
+	FixedBitSet        int64 `json:"fixed_bit_set_memory_in_bytes"`
+	DocValuesMemory    int64 `json:"doc_values_memory_in_bytes"`
+	TermVectorsMemory  int64 `json:"term_vectors_memory_in_bytes"`
+	PointsMemory       int64 `json:"points_memory_in_bytes"`
+	VersionMapMemory   int64 `json:"version_map_memory_in_bytes"`
+}
+
+// NodeStatsIndicesStoreResponse defines node stats store information structure for indices
 type NodeStatsIndicesStoreResponse struct {
 	Size         int64 `json:"size_in_bytes"`
 	ThrottleTime int64 `json:"throttle_time_in_millis"`
 }
 
+// NodeStatsIndicesIndexingResponse defines node stats indexing information structure for indices
 type NodeStatsIndicesIndexingResponse struct {
 	IndexTotal    int64 `json:"index_total"`
 	IndexTime     int64 `json:"index_time_in_millis"`
@@ -160,18 +190,23 @@ type NodeStatsIndicesIndexingResponse struct {
 	DeleteTotal   int64 `json:"delete_total"`
 	DeleteTime    int64 `json:"delete_time_in_millis"`
 	DeleteCurrent int64 `json:"delete_current"`
+	IsThrottled   bool  `json:"is_throttled"`
+	ThrottleTime  int64 `json:"throttle_time_in_millis"`
 }
 
+// NodeStatsIndicesMergesResponse defines node stats merges information structure for indices
 type NodeStatsIndicesMergesResponse struct {
-	Current     int64 `json:"current"`
-	CurrentDocs int64 `json:"current_docs"`
-	CurrentSize int64 `json:"current_size_in_bytes"`
-	Total       int64 `json:"total"`
-	TotalDocs   int64 `json:"total_docs"`
-	TotalSize   int64 `json:"total_size_in_bytes"`
-	TotalTime   int64 `json:"total_time_in_millis"`
+	Current            int64 `json:"current"`
+	CurrentDocs        int64 `json:"current_docs"`
+	CurrentSize        int64 `json:"current_size_in_bytes"`
+	Total              int64 `json:"total"`
+	TotalDocs          int64 `json:"total_docs"`
+	TotalSize          int64 `json:"total_size_in_bytes"`
+	TotalTime          int64 `json:"total_time_in_millis"`
+	TotalThrottledTime int64 `json:"total_throttled_time_in_millis"`
 }
 
+// NodeStatsIndicesGetResponse defines node stats get information structure for indices
 type NodeStatsIndicesGetResponse struct {
 	Total        int64 `json:"total"`
 	Time         int64 `json:"time_in_millis"`
@@ -182,6 +217,7 @@ type NodeStatsIndicesGetResponse struct {
 	Current      int64 `json:"current"`
 }
 
+// NodeStatsIndicesSearchResponse defines node stats search information structure for indices
 type NodeStatsIndicesSearchResponse struct {
 	OpenContext  int64 `json:"open_contexts"`
 	QueryTotal   int64 `json:"query_total"`
@@ -190,13 +226,25 @@ type NodeStatsIndicesSearchResponse struct {
 	FetchTotal   int64 `json:"fetch_total"`
 	FetchTime    int64 `json:"fetch_time_in_millis"`
 	FetchCurrent int64 `json:"fetch_current"`
+	SuggestTotal int64 `json:"suggest_total"`
+	SuggestTime  int64 `json:"suggest_time_in_millis"`
+	ScrollTotal  int64 `json:"scroll_total"`
+	ScrollTime   int64 `json:"scroll_time_in_millis"`
 }
 
+// NodeStatsIndicesFlushResponse defines node stats flush information structure for indices
 type NodeStatsIndicesFlushResponse struct {
 	Total int64 `json:"total"`
 	Time  int64 `json:"total_time_in_millis"`
 }
 
+// NodeStatsIndicesWarmerResponse defines node stats warmer information structure for indices
+type NodeStatsIndicesWarmerResponse struct {
+	Total     int64 `json:"total"`
+	TotalTime int64 `json:"total_time_in_millis"`
+}
+
+// NodeStatsIndicesCacheResponse defines node stats cache information structure for indices
 type NodeStatsIndicesCacheResponse struct {
 	Evictions  int64 `json:"evictions"`
 	MemorySize int64 `json:"memory_size_in_bytes"`
@@ -219,6 +267,7 @@ type NodeStatsOSResponse struct {
 	Swap    NodeStatsOSSwapResponse `json:"swap"`
 }
 
+// NodeStatsOSMemResponse defines node stats operating system memory usage structure
 type NodeStatsOSMemResponse struct {
 	Free       int64 `json:"free_in_bytes"`
 	Used       int64 `json:"used_in_bytes"`
@@ -226,11 +275,13 @@ type NodeStatsOSMemResponse struct {
 	ActualUsed int64 `json:"actual_used_in_bytes"`
 }
 
+// NodeStatsOSSwapResponse defines node stats operating system swap usage structure
 type NodeStatsOSSwapResponse struct {
 	Used int64 `json:"used_in_bytes"`
 	Free int64 `json:"free_in_bytes"`
 }
 
+// NodeStatsOSCPUResponse defines node stats operating system CPU usage structure
 type NodeStatsOSCPUResponse struct {
 	Sys     int64                      `json:"sys"`
 	User    int64                      `json:"user"`
@@ -240,6 +291,7 @@ type NodeStatsOSCPUResponse struct {
 	Percent int64                      `json:"percent"`
 }
 
+// NodeStatsOSCPULoadResponse defines node stats operating system CPU load structure
 type NodeStatsOSCPULoadResponse struct {
 	Load1  float64 `json:"1m"`
 	Load5  float64 `json:"5m"`
@@ -255,12 +307,14 @@ type NodeStatsProcessResponse struct {
 	Memory    NodeStatsProcessMemResponse `json:"mem"`
 }
 
+// NodeStatsProcessMemResponse defines node stats process memory usage structure
 type NodeStatsProcessMemResponse struct {
 	Resident     int64 `json:"resident_in_bytes"`
 	Share        int64 `json:"share_in_bytes"`
 	TotalVirtual int64 `json:"total_virtual_in_bytes"`
 }
 
+// NodeStatsProcessCPUResponse defines node stats process CPU usage structure
 type NodeStatsProcessCPUResponse struct {
 	Percent int64 `json:"percent"`
 	Sys     int64 `json:"sys_in_millis"`
@@ -268,6 +322,7 @@ type NodeStatsProcessCPUResponse struct {
 	Total   int64 `json:"total_in_millis"`
 }
 
+// NodeStatsHTTPResponse defines node stats HTTP connections structure
 type NodeStatsHTTPResponse struct {
 	CurrentOpen int64 `json:"current_open"`
 	TotalOpen   int64 `json:"total_open"`
@@ -275,21 +330,34 @@ type NodeStatsHTTPResponse struct {
 
 // NodeStatsFSResponse is a representation of a file system information, data path, free disk space, read/write stats
 type NodeStatsFSResponse struct {
-	Timestamp int64                     `json:"timestamp"`
-	Data      []NodeStatsFSDataResponse `json:"data"`
+	Timestamp int64                      `json:"timestamp"`
+	Data      []NodeStatsFSDataResponse  `json:"data"`
+	IOStats   NodeStatsFSIOStatsResponse `json:"io_stats"`
 }
 
+// NodeStatsFSDataResponse defines node stats filesystem data structure
 type NodeStatsFSDataResponse struct {
-	Path          string `json:"path"`
-	Mount         string `json:"mount"`
-	Device        string `json:"dev"`
-	Total         int64  `json:"total_in_bytes"`
-	Free          int64  `json:"free_in_bytes"`
-	Available     int64  `json:"available_in_bytes"`
-	DiskReads     int64  `json:"disk_reads"`
-	DiskWrites    int64  `json:"disk_writes"`
-	DiskReadSize  int64  `json:"disk_read_size_in_bytes"`
-	DiskWriteSize int64  `json:"disk_write_size_in_bytes"`
+	Path      string `json:"path"`
+	Mount     string `json:"mount"`
+	Device    string `json:"dev"`
+	Total     int64  `json:"total_in_bytes"`
+	Free      int64  `json:"free_in_bytes"`
+	Available int64  `json:"available_in_bytes"`
+}
+
+// NodeStatsFSIOStatsResponse defines node stats filesystem device structure
+type NodeStatsFSIOStatsResponse struct {
+	Devices []NodeStatsFSIOStatsDeviceResponse `json:"devices"`
+}
+
+// NodeStatsFSIOStatsDeviceResponse is a representation of a node stat filesystem device
+type NodeStatsFSIOStatsDeviceResponse struct {
+	DeviceName      string `json:"device_name"`
+	Operations      int64  `json:"operations"`
+	ReadOperations  int64  `json:"read_operations"`
+	WriteOperations int64  `json:"write_operations"`
+	ReadSize        int64  `json:"read_kilobytes"`
+	WriteSize       int64  `json:"write_kilobytes"`
 }
 
 // ClusterHealthResponse is a representation of a Elasticsearch Cluster Health

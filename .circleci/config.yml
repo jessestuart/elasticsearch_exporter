@@ -26,18 +26,22 @@ workflows:
                 - master
 
 shared: &shared
-  machine: true
+  docker:
+    - image: docker:18-git
   steps:
     - checkout
 
+    - setup_remote_docker:
+        docker_layer_caching: true
+
     - run:
         name: Install build dependencies.
-        command: sudo apt update && sudo apt install curl jq
+        command: apk add --no-cache bash curl git jq make perl
 
     - run:
         # Unforunately, there's no easy way to "merge" anchors/references
-        # according to the # YAML 1.2 spec. So, the recommended way to handle
-        # this is to dump your # values into a file and source it at build time.
+        # according to the YAML 1.2 spec. So, the recommended way to handle
+        # this is to dump your values into a file and source it at build time.
         # @see e.g., https://circleci.com/docs/2.0/env-vars/#interpolating-environment-variables
         name: Set up shared environment vars.
         command: |
@@ -60,14 +64,29 @@ shared: &shared
             exit 1
           fi
 
-          sudo rm -rf /usr/local/go
-          sudo mkdir /usr/local/go
-          export CI_USER=$(whoami)
-          sudo chown "${CI_USER}:" /usr/local/go
+          # sudo rm -rf /usr/local/go
+          # sudo mkdir /usr/local/go
+          # export CI_USER=$(whoami)
+          # sudo chown "${CI_USER}:" /usr/local/go
+
+    - run:
+        name: Build and push Docker image.
+        command: |
+          source $BASH_ENV
+          sh -c .circleci/push-multiarch.sh
+
+shared: &shared
+  machine: true
+  steps:
+    - checkout
+
+    - run:
+        name: Install build dependencies.
+        command: sudo apt update && sudo apt install curl jq
 
     - restore_cache:
         keys:
-          - go-1.10
+          - go-1.12
     - run:
         name: Update Go version.
         command: |
@@ -105,9 +124,7 @@ shared: &shared
     - run:
         name: Build and push Docker image.
         command: |
-          pwd
           cp $PROJECT_PATH/$IMAGE .
-          ls -alh
           .circleci/push-multiarch.sh
 
 jobs:
@@ -187,4 +204,3 @@ jobs:
           command: |
             export VERSION=$(cat ~/VERSION)
             manifest-tool inspect "$REGISTRY/$IMAGE:$VERSION"
-
